@@ -8,13 +8,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 /**
+ * @author rubn
  * Show hour with pattern H:mm:ss
  */
 @Service
 public class HourService {
 
     public String getHour() {
-        return DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss")
+        return DateTimeFormatter.ofPattern("HH:mm:ss")
                 .withLocale(Locale.getDefault())
                 .withZone(ZoneId.systemDefault())
                 .format(Instant.now());
