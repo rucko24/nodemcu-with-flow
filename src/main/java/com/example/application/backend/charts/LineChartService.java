@@ -50,7 +50,7 @@ public class LineChartService {
                                 .withEnabled(true)
                                 .withEasing(Easing.linear)
                                 .withDynamicAnimation(DynamicAnimationBuilder.get()
-                                        .withSpeed(1000)
+                                        .withSpeed(2000)
                                         .build())
                                 .build())
                         .withToolbar(ToolbarBuilder.get()
