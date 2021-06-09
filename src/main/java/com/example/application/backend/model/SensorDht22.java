@@ -12,7 +12,7 @@ public class SensorDht22 {
     private String status;
     private String sensor;
     private String type;
-    private String humidity;
-    private String temperature;
+    private double humidity;
+    private double temperature;
 
 }

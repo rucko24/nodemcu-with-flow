@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 public class Dht22Service {
 
-    public static final String BASE_URL = "http://192.168.1.128:8081/async-esp8266/api/v1/";
+    public static final String BASE_URL = "http://192.168.1.128:8081/async-esp8285/api/v1/";
     public static final String LED = "led";
     public static final String DHT_22 = "dht22";
     public static final String LED_ID = "id";
@@ -64,8 +64,8 @@ public class Dht22Service {
                 .doOnError(error -> ui.access(() -> Notification.show(error.getMessage())))
                 .subscribe(sensorDht22 -> {
                     ui.access(() -> {
-                        final Double humidity = Double.valueOf(sensorDht22.getHumidity());
-                        final Double temperature = Double.valueOf(sensorDht22.getTemperature());
+                        final double humidity = sensorDht22.getHumidity();
+                        final double temperature = sensorDht22.getTemperature();
                         datasHumidities.add(humidity);
                         datasTemps.add(temperature);
                         log.info("SensorDht22 humidity: {}", humidity);
