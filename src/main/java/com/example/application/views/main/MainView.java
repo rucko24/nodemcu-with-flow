@@ -51,7 +51,8 @@ public class MainView extends AppLayout {
         layout.add(new DrawerToggle());
         viewTitle = new H1();
         layout.add(viewTitle);
-        layout.add(new Avatar());
+        final Avatar esp8255 = new Avatar("esp8285h08","./images/ESP8285H08.jpeg");
+        layout.add(esp8255);
         return layout;
     }
 
@@ -65,7 +66,7 @@ public class MainView extends AppLayout {
         HorizontalLayout logoLayout = new HorizontalLayout();
         logoLayout.setId("logo");
         logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        logoLayout.add(new Image("images/logo.png", "Vaadin flow NodeMCU logo"));
+        logoLayout.add(new Image("images/ESP8285H08.jpeg", "Vaadin flow NodeMCU logo"));
         logoLayout.add(new H1("Vaadin flow NodeMCU"));
         layout.add(logoLayout, menu);
         return layout;
