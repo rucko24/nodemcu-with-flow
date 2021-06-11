@@ -1,13 +1,8 @@
 package com.example.application.backend.services;
 
+import com.example.application.backend.services.charts.ApexChartService;
 import com.example.application.backend.model.SensorDht22;
 import com.github.appreciated.apexcharts.ApexCharts;
-import com.github.appreciated.apexcharts.config.builder.YAxisBuilder;
-import com.github.appreciated.apexcharts.config.xaxis.Labels;
-import com.github.appreciated.apexcharts.config.xaxis.labels.DatetimeFormatter;
-import com.github.appreciated.apexcharts.config.yaxis.Title;
-import com.github.appreciated.apexcharts.config.yaxis.title.Style;
-import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import lombok.extern.log4j.Log4j2;
@@ -17,8 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.*;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.example.application.backend.services.charts.ApexChartService.HUMIDITY;
+import static com.example.application.backend.services.charts.ApexChartService.TEMPERATURE;
 
 
 /**
@@ -37,22 +33,14 @@ public class Dht22Service {
     public static final String ON = "on";
     public static final String OFF = "off";
 
-    private HourService hourService;
+    private TimestampService timestampService;
 
     @Autowired
-    public Dht22Service(final HourService hourService) {
-        this.hourService = hourService;
+    public Dht22Service(final TimestampService timestampService) {
+        this.timestampService = timestampService;
     }
 
-    public void readDht22Sensor(final UI ui, final ApexCharts lineChart) {
-        lineChart.setDebug(true);
-        final List<Double> datasHumidities = new CopyOnWriteArrayList<>();
-        datasHumidities.add(0.0);
-        final List<Double> datasTemps = new CopyOnWriteArrayList<>();
-        datasTemps.add(0.0);
-        final List<String> dataHours = new CopyOnWriteArrayList<>();
-        dataHours.add("");
-
+    public void readDht22Sensor(final UI ui, final ApexCharts apexCharts, final ApexChartService service) {
         WebClient.create(BASE_URL)
                 .get()
                 .uri(DHT_22)
@@ -64,29 +52,19 @@ public class Dht22Service {
                 .doOnError(error -> ui.access(() -> Notification.show(error.getMessage())))
                 .subscribe(sensorDht22 -> {
                     ui.access(() -> {
-                        final double humidity = sensorDht22.getHumidity();
-                        final double temperature = sensorDht22.getTemperature();
-                        datasHumidities.add(humidity);
-                        datasTemps.add(temperature);
-                        log.info("SensorDht22 humidity: {}", humidity);
-                        log.info("SensorDht22 temperature: {}", temperature);
-                        lineChart.updateSeries(
-                                new Series<>("Humidity % ", datasHumidities.toArray()),
-                                new Series<>("Temperatures ª ", datasTemps.toArray()));
+                        final var timestampHumidities = timestampService.getTimestampHumidities(sensorDht22.getHumidity());
+                        apexCharts.setLabels(service.getApexChartsLabels(timestampHumidities));
+                        final var listCoordinate = timestampService.getTimestampHumidities(sensorDht22.getHumidity());
+                        var seriesHumidities = service.getApexChartsCoordinateSeries(HUMIDITY,listCoordinate);
+
+                        final var timestampTemperatures = timestampService.getTimestampTemperatures(sensorDht22.getTemperature());
+                        apexCharts.setLabels(service.getApexChartsLabels(timestampTemperatures));
+                        final var listCoordinate2 = timestampService.getTimestampTemperatures(sensorDht22.getTemperature());
+                        var seriesTemperatures = service.getApexChartsCoordinateSeries(TEMPERATURE,listCoordinate2);
+
+                        apexCharts.updateSeries(seriesHumidities, seriesTemperatures);
                     });
                 });
-    }
-
-    private static String getFormattedString() {
-        ZonedDateTime zdt = Instant.ofEpochMilli(Instant.now().toEpochMilli()).atZone(ZoneId.systemDefault());
-        LocalDateTime ldt = LocalDateTime.of(zdt.getYear(),
-                zdt.getMonth(),
-                zdt.getDayOfMonth(),
-                zdt.getHour(),
-                zdt.getMinute(),
-                zdt.getSecond(),
-                0);
-        return ldt.toString();
     }
 
 }
