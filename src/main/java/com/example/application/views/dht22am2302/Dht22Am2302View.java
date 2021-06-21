@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.stream.Stream;
 
 import static com.example.application.backend.services.Dht22Service.*;
-import static com.example.application.backend.services.charts.ApexChartService.TITLE_YAXYS;
 
 /**
  * Show humidities and temperatures
@@ -59,7 +58,7 @@ public class Dht22Am2302View extends VerticalLayout {
     }
 
     private Div lineChartDiv() {
-        this.apexCharts = apexChartService.getLineChart(TITLE_YAXYS);
+        this.apexCharts = apexChartService.getLineChart();
         apexCharts.setColors(apexChartService.getRandomTriColor());
         final Div divLineChart = new Div(apexCharts);
         Stream.of(apexCharts).forEach(HasSize::setWidthFull);

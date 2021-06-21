@@ -5,8 +5,6 @@ import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.ApexChartsBuilder;
 import com.github.appreciated.apexcharts.config.builder.*;
 import com.github.appreciated.apexcharts.config.chart.Type;
-import com.github.appreciated.apexcharts.config.chart.animations.Easing;
-import com.github.appreciated.apexcharts.config.chart.animations.builder.AnimateGraduallyBuilder;
 import com.github.appreciated.apexcharts.config.chart.animations.builder.DynamicAnimationBuilder;
 import com.github.appreciated.apexcharts.config.chart.builder.AnimationsBuilder;
 import com.github.appreciated.apexcharts.config.chart.builder.ToolbarBuilder;
@@ -21,9 +19,9 @@ import com.github.appreciated.apexcharts.config.subtitle.Align;
 import com.github.appreciated.apexcharts.config.xaxis.XAxisType;
 import com.github.appreciated.apexcharts.config.xaxis.builder.LabelsBuilder;
 import com.github.appreciated.apexcharts.config.xaxis.builder.TitleBuilder;
-import com.github.appreciated.apexcharts.config.yaxis.title.builder.StyleBuilder;
 import com.github.appreciated.apexcharts.helper.Coordinate;
 import com.github.appreciated.apexcharts.helper.Series;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -43,10 +41,11 @@ import java.util.stream.LongStream;
  * @autor Detlef Boehm
  * @author rubn
  */
+@Log4j2
 @Service
 public class ApexChartService {
 
-    private static final int MAX_VALUES = 11;
+    public static final int MAX_VALUES = 11;
     private static final String FONT_SIZE = "16px";
     public static final String HUMIDITY = "Humidity%";
     public static final String TEMPERATURE = "TemperatureºC";
@@ -68,7 +67,7 @@ public class ApexChartService {
             "}";
 
 
-    public ApexCharts getLineChart(final String titleText) {
+    public ApexCharts getLineChart() {
         return ApexChartsBuilder.get()
                 .withChart(ChartBuilder.get()
                         .withType(Type.line)
@@ -80,17 +79,18 @@ public class ApexChartService {
                                 .build())
                         .withAnimations(AnimationsBuilder.get()
                                 .withDynamicAnimation(DynamicAnimationBuilder.get()
-                                        .withSpeed(2000)
+                                        .withSpeed(500)
                                         .withEnabled(true)
                                         .build())
-                                .withAnimateGradually(AnimateGraduallyBuilder.get()
-                                        .withDelay(2000)
-                                        .withEnabled(true)
-                                        .build())
-                                .withEasing(Easing.linear)
-                                .withSpeed(2000.0)
-                                .withEnabled(true)
-                                .build())
+//                                .withAnimateGradually(AnimateGraduallyBuilder.get()
+//                                        .withDelay(2000)
+//                                        .withEnabled(true)
+//                                        .build())
+//                                .withEasing(Easing.linear)
+//                                .withSpeed(2000.0)
+//                                .withEnabled(true)
+//                                .build())
+                        .build())
                         .build())
                 .withDataLabels(DataLabelsBuilder.get()
                         .withEnabled(false)
@@ -100,8 +100,8 @@ public class ApexChartService {
                         .withAlign(Align.center)
                         .build())
                 .withStroke(StrokeBuilder.get()
-                        .withLineCap(LineCap.round)
-                        .withCurve(Curve.smooth)
+                        .withLineCap(LineCap.butt)
+                        .withCurve(Curve.straight)
                         .build())
                 .withLegend(LegendBuilder.get()
                         .withPosition(Position.top)
@@ -111,19 +111,19 @@ public class ApexChartService {
                         .build())
                 .withYaxis(YAxisBuilder.get()
                         .withOpposite(false)
-                        .withTitle(com.github.appreciated.apexcharts.config.yaxis.builder.TitleBuilder.get()
-                                .withText(titleText)
-                                .withStyle(StyleBuilder.get()
-                                        .withFontSize(FONT_SIZE)
-                                        .build())
-                                .build())
+//                        .withTitle(com.github.appreciated.apexcharts.config.yaxis.builder.TitleBuilder.get()
+//                                .withText(titleText)
+//                                .withStyle(StyleBuilder.get()
+//                                        //.withFontSize(FONT_SIZE)
+//                                        .build())
+//                                .build())
                         .build())
                 .withXaxis(XAxisBuilder.get()
                         .withType(XAxisType.datetime)
                         .withLabels(LabelsBuilder.get()
                                 .withFormatter(FORMATTER_TIMESTAMP)
                                 .withShowDuplicates(false)
-                                .withRotateAlways(true)
+                                //.withRotateAlways(true)
                                 .withShow(true)
                                 .build())
                         .withAxisTicks(com.github.appreciated.apexcharts.config.xaxis.builder.AxisTicksBuilder.get()
@@ -137,7 +137,7 @@ public class ApexChartService {
                                     .withFontSize(FONT_SIZE)
                                     .build())
                                 .build())
-                        .withTickAmount(BigDecimal.valueOf(5))
+                        .withTickAmount(BigDecimal.valueOf(10))
                         .build())
                 .withGrid(GridBuilder.get()
                         .withRow(RowBuilder.get()
@@ -146,22 +146,28 @@ public class ApexChartService {
                                 .build())
                         .build())
                 .withSeries(new Series<>(HUMIDITY, SeriesType.line, 0.0),
-                        new Series<>(TEMPERATURE,SeriesType.line,0.0))
+                        new Series<>(TEMPERATURE, SeriesType.line,0.0))
                 .build();
     }
 
     public Series<Object> getApexChartsCoordinateSeries(String name, List<VaadinServerTimestamp> timestamp) {
-        final var apexChartsData = getApexChartsSeries(name, timestamp).getData();
+        final var apexChartsData = getApexChartsSeries(timestamp);
         final var apexChartsLabels = getApexChartsLabels(timestamp);
-        final var coordinates = new Coordinate[apexChartsData.length];
+        final var coordinates = new Coordinate[apexChartsData.length - 1];
         final var coordinateSeries = new Series<>(name);
-        IntStream.range(0, apexChartsLabels.length)
-                .forEach(i -> coordinates[i] = new Coordinate<Object, Object>(apexChartsLabels[i], apexChartsData[i]));
+        IntStream.range(0, apexChartsLabels.length - 1 )
+                .forEach(i -> {
+                    try {
+                        coordinates[i] = new Coordinate<Object, Object>(apexChartsLabels[i], apexChartsData[i]);
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        log.info(ex.getMessage());
+                    }
+                });
         coordinateSeries.setData(coordinates);
         return coordinateSeries;
     }
 
-    public Series<Double> getApexChartsSeries(String name, List<VaadinServerTimestamp> timestamp) {
+    public Double[] getApexChartsSeries(List<VaadinServerTimestamp> timestamp) {
         var values = new CopyOnWriteArrayList<>();
         final int deltaPos = MAX_VALUES - timestamp.size();
         if (deltaPos > 0) {
@@ -170,7 +176,7 @@ public class ApexChartService {
             IntStream.range(0, deltaPos).forEach(index -> values.add(bean.getValue()));
         }
         timestamp.forEach(value -> values.add(value.getValue()));
-        return new Series<>(name, values.toArray(new Double[]{}));
+        return values.toArray(new Double[]{});
     }
 
     public String[] getApexChartsLabels(List<VaadinServerTimestamp> timestamp) {

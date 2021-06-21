@@ -12,7 +12,7 @@ public class VaadinServerTimestamp {
 
     public VaadinServerTimestamp(long timestamp, double value) {
         this.timestamp = timestamp;
-        if(value >= 0 && value <= 100) {
+        if(value >= 0 && value <= 100) {// range sensor 0 to 100%RH
             this.value = value;
         }
     }

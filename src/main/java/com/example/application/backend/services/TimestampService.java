@@ -7,6 +7,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.example.application.backend.services.charts.ApexChartService.MAX_VALUES;
+
 /**
  * @author rubn
  */
@@ -17,7 +19,7 @@ public class TimestampService {
 
     public List<VaadinServerTimestamp> getTimestampHumidities(final double mNextDouble) {
         final var vaadinServerTimestamp = new VaadinServerTimestamp(Instant.now().toEpochMilli(), mNextDouble);
-        if (listHumidities.size() <= 10) {
+        if (listHumidities.size() <= MAX_VALUES - 1) {
             listHumidities.add(vaadinServerTimestamp);
         } else {
             listHumidities.remove(0);
@@ -27,7 +29,7 @@ public class TimestampService {
 
     public List<VaadinServerTimestamp> getTimestampTemperatures(final double mNextDouble) {
         final var vaadinServerTimestamp = new VaadinServerTimestamp(Instant.now().toEpochMilli(), mNextDouble);
-        if (listTemperatures.size() <= 10) {
+        if (listTemperatures.size() <= MAX_VALUES - 1) {
             listTemperatures.add(vaadinServerTimestamp);
         } else {
             listTemperatures.remove(0);
