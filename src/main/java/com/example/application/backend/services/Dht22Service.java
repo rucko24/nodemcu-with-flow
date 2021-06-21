@@ -2,8 +2,10 @@ package com.example.application.backend.services;
 
 import com.example.application.backend.services.charts.ApexChartService;
 import com.example.application.backend.model.SensorDht22;
+import com.example.application.backend.services.grid.SensorDht22GridServices;
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,11 @@ public class Dht22Service {
         this.timestampService = timestampService;
     }
 
-    public void readDht22Sensor(final UI ui, final ApexCharts apexCharts, final ApexChartService service) {
+    public void readDht22Sensor(final UI ui, final ApexCharts apexCharts,
+                                final ApexChartService service,
+                                final H2 h2,final H2 h2Humidity,
+                                final SensorDht22GridServices sensorDht22GridServices) {
+
         WebClient.create(BASE_URL)
                 .get()
                 .uri(DHT_22)
@@ -52,6 +58,9 @@ public class Dht22Service {
                 .doOnError(error -> ui.access(() -> Notification.show(error.getMessage())))
                 .subscribe(sensorDht22 -> {
                     ui.access(() -> {
+                        sensorDht22GridServices.setData(sensorDht22);
+                        h2.setText(String.valueOf(sensorDht22.getTemperature()));
+                        h2Humidity.setText(String.valueOf(sensorDht22.getHumidity()));
                         final var timestampHumidities = timestampService.getTimestampHumidities(sensorDht22.getHumidity());
                         apexCharts.setLabels(service.getApexChartsLabels(timestampHumidities));
                         final var listCoordinate = timestampService.getTimestampHumidities(sensorDht22.getHumidity());
