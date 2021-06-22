@@ -3,8 +3,8 @@
 @import url('./views/about-view.css');
 @import url('lumo-css-framework/all-classes.css');
 
-.color {
-  color: red;
+.color-titles {
+  color: var(--lumo-primary-text-color);
 }
 
 .label-current[status="error"]   {

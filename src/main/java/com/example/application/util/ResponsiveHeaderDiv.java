@@ -22,6 +22,7 @@ public interface ResponsiveHeaderDiv {
         final Div divWithBorder = new Div(component);
         component.getElement().getStyle().set("margin","10px 10px");
         final H3 h3Titulo = new H3(titulo);
+        h3Titulo.addClassName("color-titles");
         div.add(h3Titulo,divWithBorder);
         return div;
     }
