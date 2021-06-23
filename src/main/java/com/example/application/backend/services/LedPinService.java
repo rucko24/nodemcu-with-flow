@@ -3,6 +3,7 @@ package com.example.application.backend.services;
 import com.example.application.backend.model.SensorDht22;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,13 +20,20 @@ import static com.example.application.backend.services.Dht22Service.BASE_URL;
 @Service
 public class LedPinService {
 
+    private WebClient webClient;
+
+    @Autowired
+    public LedPinService(final WebClient webClient) {
+        this.webClient = webClient;
+    }
+
     /**
      *
      * @param ui UI
      * @param functionQueryParameters ?id=2&status={on/off}
      */
     public void highLowPin(final UI ui, Function<UriBuilder, URI> functionQueryParameters) {
-        WebClient.create(BASE_URL)
+        this.webClient
                 .put()
                 .uri(functionQueryParameters)
                 .accept(MediaType.APPLICATION_JSON)

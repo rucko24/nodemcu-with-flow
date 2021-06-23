@@ -36,10 +36,12 @@ public class Dht22Service {
     public static final String OFF = "off";
 
     private TimestampService timestampService;
+    private WebClient webClient;
 
     @Autowired
-    public Dht22Service(final TimestampService timestampService) {
+    public Dht22Service(final TimestampService timestampService, final WebClient webClient) {
         this.timestampService = timestampService;
+        this.webClient = webClient;
     }
 
     public void readDht22Sensor(final UI ui, final ApexCharts apexCharts,
@@ -47,7 +49,7 @@ public class Dht22Service {
                                 final H2 h2,final H2 h2Humidity,
                                 final SensorDht22GridServices sensorDht22GridServices) {
 
-        WebClient.create(BASE_URL)
+        webClient
                 .get()
                 .uri(DHT_22)
                 .accept(MediaType.APPLICATION_JSON)
