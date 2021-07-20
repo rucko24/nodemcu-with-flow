@@ -9,6 +9,7 @@ import com.example.application.views.main.MainView;
 import com.github.appreciated.apexcharts.ApexCharts;
 import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
@@ -21,9 +22,11 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.util.stream.Stream;
 
 import static com.example.application.backend.services.Dht22Service.*;
@@ -37,6 +40,7 @@ import static com.example.application.backend.services.Dht22Service.*;
 @Route(value = "dht22-am2302", layout = MainView.class)
 @RouteAlias(value = "", layout = MainView.class)
 @PageTitle("DHT-22-AM2302")
+@RequiredArgsConstructor
 public class Dht22Am2302View extends VerticalLayout implements ResponsiveHeaderDiv {
 
     public static final String BOX_SHADOW_PROPERTY = "box-shadow";
@@ -44,26 +48,17 @@ public class Dht22Am2302View extends VerticalLayout implements ResponsiveHeaderD
 
     private final ToggleButton ledPinButton = new ToggleButton("On/Off");
     private ApexCharts apexCharts;
-    private ApexChartService apexChartService;
-    private LedPinService ledPinService;
-    private Dht22Service dht22Service;
+    private final ApexChartService apexChartService;
+    private final LedPinService ledPinService;
+    private final Dht22Service dht22Service;
+    private final SensorDht22GridServices sensorDht22GridServices;
     private H2 h2Temperature = new H2("0");
     private H2 h2Humidity = new H2("0");
-    private SensorDht22GridServices sensorDht22GridServices;
     private String[] colors;
 
-    @Autowired
-    public Dht22Am2302View(final ApexChartService apexChartService,
-                           final LedPinService ledPinService,
-                           final Dht22Service dht22Service,
-                           final SensorDht22GridServices sensorDht22GridServices) {
-
-        this.sensorDht22GridServices = sensorDht22GridServices;
-        this.ledPinService = ledPinService;
-        this.apexChartService = apexChartService;
-        this.dht22Service = dht22Service;
+    @PostConstruct
+    public void init() {
         super.setSizeFull();
-
         super.add(this.headerDiv());
         super.add(this.gridAndChart());
     }
@@ -116,6 +111,11 @@ public class Dht22Am2302View extends VerticalLayout implements ResponsiveHeaderD
                                 .build());
             }
         });
+    }
+
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        super.onDetach(detachEvent);
     }
 
     @Override
