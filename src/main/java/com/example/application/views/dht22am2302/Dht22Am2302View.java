@@ -24,12 +24,16 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.util.stream.Stream;
 
-import static com.example.application.backend.services.Dht22Service.*;
+import static com.example.application.backend.services.Dht22Service.LED;
+import static com.example.application.backend.services.Dht22Service.LED_ID;
+import static com.example.application.backend.services.Dht22Service.LED_ID_VALUE;
+import static com.example.application.backend.services.Dht22Service.OFF;
+import static com.example.application.backend.services.Dht22Service.ON;
+import static com.example.application.backend.services.Dht22Service.STATUS;
 
 /**
  * Show humidities and temperatures

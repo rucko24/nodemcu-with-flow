@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- *
+ * @author rubn
  */
 @Getter
 @Log4j2
@@ -57,7 +57,6 @@ public class SensorDht22GridServices extends Grid<SensorDht22> {
         });
 
     }
-
 
     public void setData(SensorDht22 sensorDht22) {
         this.sensorDht22List.add(sensorDht22);
