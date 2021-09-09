@@ -29,11 +29,12 @@ class SensorDht22WebConfiguration {
      */
     @Bean
     public RouterFunction<ServerResponse> routes() {
-        final SensorDht22 sensorDht22 = new SensorDht22();
-        sensorDht22.setSensor(DHT_22);
-        sensorDht22.setType(AM2302);
-        sensorDht22.setHumidity(HUMIDITY);
-        sensorDht22.setTemperature(TEMPERATURE);
+        final SensorDht22 sensorDht22 = SensorDht22.builder()
+                .sensor(DHT_22)
+                .type(AM2302)
+                .humidity(HUMIDITY)
+                .temperature(TEMPERATURE)
+                .build();
 
         return RouterFunctions.route(RequestPredicates.GET(TEST_URL_BASE),
                 serverRequest -> ServerResponse
