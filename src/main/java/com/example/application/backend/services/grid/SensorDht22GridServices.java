@@ -4,6 +4,8 @@ import com.example.application.backend.model.SensorDht22;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.data.provider.CallbackDataProvider.CountCallback;
+import com.vaadin.flow.data.provider.CallbackDataProvider.FetchCallback;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -58,13 +60,19 @@ public class SensorDht22GridServices extends Grid<SensorDht22> {
 
     }
 
+    /**
+     *
+     * Lazy loading with DataProvider.fromCallbacks
+     *
+     * @param sensorDht22 from mapper
+     */
     public void setData(SensorDht22 sensorDht22) {
         this.sensorDht22List.add(sensorDht22);
         super.setDataProvider(DataProvider.fromCallbacks(
-                query -> {
+                (FetchCallback<SensorDht22, Void>) query -> {
                     int offset = query.getOffset();
                     return sensorDht22List.subList(offset,query.getOffset() + query.getLimit()).stream();
-                }, query -> sensorDht22List.size()));
+                },(CountCallback<SensorDht22, Void>) query -> sensorDht22List.size()));
     }
 
 }

@@ -1,18 +1,21 @@
 package com.example.application.backend.model;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Value;
 
 /**
  * @author rubn
+ * @implSpec THREAD-SAFE
  */
-@Data
+@Value
+@Builder
 public class SensorDht22 {
 
-    private int id;
-    private String status;
-    private String sensor;
-    private String type;
-    private double humidity;
-    private double temperature;
+    int id;
+    String status;
+    String sensor;
+    String type;
+    double humidity;
+    double temperature;
 
 }

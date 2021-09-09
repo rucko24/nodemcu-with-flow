@@ -12,6 +12,7 @@ import com.github.appreciated.apexcharts.config.builder.TitleSubtitleBuilder;
 import com.github.appreciated.apexcharts.config.builder.XAxisBuilder;
 import com.github.appreciated.apexcharts.config.builder.YAxisBuilder;
 import com.github.appreciated.apexcharts.config.chart.Type;
+import com.github.appreciated.apexcharts.config.chart.animations.builder.AnimateGraduallyBuilder;
 import com.github.appreciated.apexcharts.config.chart.animations.builder.DynamicAnimationBuilder;
 import com.github.appreciated.apexcharts.config.chart.builder.AnimationsBuilder;
 import com.github.appreciated.apexcharts.config.chart.builder.ToolbarBuilder;
@@ -61,7 +62,7 @@ public class ApexChartService {
     public static final String COLOR_BLUE = "#000098FF";
     public static final String COLOR_YELLOW = "#FFD500FF";
 
-    private final String FORMATTER_TIMESTAMP = "function (value, timestamp) {\n" +
+    private static final String FORMATTER_TIMESTAMP = "function (value, timestamp) {\n" +
             "  var date = new Date(timestamp);" +
             "  var hours = date.getHours();\n" +
             "  var minutes = date.getMinutes();\n" +
@@ -72,7 +73,6 @@ public class ApexChartService {
             "  minutes = minutes < 10 ? '0'+minutes : minutes;\n" +
             "  return hours + ':' + minutes + ':' + ('0'+seconds).slice(-2) + ' ' + ampm;\n" +
             "}";
-
 
     public ApexCharts getLineChart() {
         return ApexChartsBuilder.get()
@@ -89,15 +89,15 @@ public class ApexChartService {
                                         .withSpeed(500)
                                         .withEnabled(true)
                                         .build())
-//                                .withAnimateGradually(AnimateGraduallyBuilder.get()
-//                                        .withDelay(2000)
-//                                        .withEnabled(true)
-//                                        .build())
+                                .withAnimateGradually(AnimateGraduallyBuilder.get()
+                                        .withDelay(2000)
+                                        .withEnabled(true)
+                                        .build())
 //                                .withEasing(Easing.linear)
 //                                .withSpeed(2000.0)
 //                                .withEnabled(true)
 //                                .build())
-                        .build())
+                            .build())
                         .build())
                 .withDataLabels(DataLabelsBuilder.get()
                         .withEnabled(false)
@@ -108,6 +108,7 @@ public class ApexChartService {
                         .build())
                 .withStroke(StrokeBuilder.get()
                         .withLineCap(LineCap.butt)
+                        //smooth(light curve) or straight
                         .withCurve(Curve.straight)
                         .build())
                 .withLegend(LegendBuilder.get()
