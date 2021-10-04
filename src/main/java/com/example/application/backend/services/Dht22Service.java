@@ -30,8 +30,6 @@ import static com.example.application.backend.services.charts.ApexChartService.T
 @Service
 @RequiredArgsConstructor
 public class Dht22Service implements NotificationsUtils {
-
-    public static final String BASE_URL = "http://192.168.1.128:8081/async-esp8285/api/v1/";
     public static final String LED = "led";
     public static final String DHT_22 = "dht22";
     public static final String LED_ID = "id";

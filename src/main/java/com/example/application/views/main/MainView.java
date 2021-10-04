@@ -1,6 +1,7 @@
 package com.example.application.views.main;
 
 import com.example.application.views.about.AboutView;
+import com.example.application.views.blinkled.SwitchLedView;
 import com.example.application.views.dht22am2302.Dht22Am2302View;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
@@ -51,7 +52,7 @@ public class MainView extends AppLayout {
         layout.add(new DrawerToggle());
         viewTitle = new H1();
         layout.add(viewTitle);
-        final Avatar esp8255 = new Avatar("esp8285h08","./images/ESP8285H08.jpeg");
+        final Avatar esp8255 = new Avatar("esp8285h08", "./images/ESP8285H08.jpeg");
         layout.add(esp8255);
         return layout;
     }
@@ -82,7 +83,10 @@ public class MainView extends AppLayout {
     }
 
     private Component[] createMenuItems() {
-        return new Tab[]{createTab("DHT-22-AM2302", Dht22Am2302View.class), createTab("About", AboutView.class)};
+        return new Tab[]{
+                createTab("DHT-22-AM2302", Dht22Am2302View.class),
+                createTab("Led", SwitchLedView.class),
+                createTab("About", AboutView.class)};
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {

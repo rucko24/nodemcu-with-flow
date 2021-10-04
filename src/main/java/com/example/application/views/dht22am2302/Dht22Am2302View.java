@@ -2,15 +2,13 @@ package com.example.application.views.dht22am2302;
 
 import com.example.application.backend.services.charts.ApexChartService;
 import com.example.application.backend.services.Dht22Service;
-import com.example.application.backend.services.LedPinService;
+import com.example.application.backend.services.SwitchLedService;
 import com.example.application.backend.services.grid.SensorDht22GridServices;
 import com.example.application.util.ResponsiveHeaderDiv;
 import com.example.application.views.main.MainView;
 import com.github.appreciated.apexcharts.ApexCharts;
-import com.vaadin.componentfactory.ToggleButton;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Hr;
@@ -28,13 +26,6 @@ import lombok.extern.log4j.Log4j2;
 import javax.annotation.PostConstruct;
 import java.util.stream.Stream;
 
-import static com.example.application.backend.services.Dht22Service.LED;
-import static com.example.application.backend.services.Dht22Service.LED_ID;
-import static com.example.application.backend.services.Dht22Service.LED_ID_VALUE;
-import static com.example.application.backend.services.Dht22Service.OFF;
-import static com.example.application.backend.services.Dht22Service.ON;
-import static com.example.application.backend.services.Dht22Service.STATUS;
-
 /**
  * Show humidities and temperatures
  */
@@ -50,10 +41,9 @@ public class Dht22Am2302View extends VerticalLayout implements ResponsiveHeaderD
     public static final String BOX_SHADOW_PROPERTY = "box-shadow";
     public static final String BOX_SHADOW_VALUE = "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)";
 
-    private final ToggleButton ledPinButton = new ToggleButton("On/Off");
     private ApexCharts apexCharts;
     private final ApexChartService apexChartService;
-    private final LedPinService ledPinService;
+    private final SwitchLedService ledPinService;
     private final Dht22Service dht22Service;
     private final SensorDht22GridServices sensorDht22GridServices;
     private H2 h2Temperature = new H2("0");
@@ -99,23 +89,7 @@ public class Dht22Am2302View extends VerticalLayout implements ResponsiveHeaderD
         return horizontalLayout;
     }
 
-    private void ledPinService(final UI ui) {
-        this.ledPinButton.addValueChangeListener(e -> {
-            if (e.getValue() == Boolean.TRUE) {
-                this.ledPinService.highLowPin(ui,
-                        uriBuilder -> uriBuilder.path(LED)
-                                .queryParam(LED_ID, LED_ID_VALUE)
-                                .queryParam(STATUS, ON)
-                                .build());
-            } else {
-                this.ledPinService.highLowPin(ui,
-                        uriBuilder -> uriBuilder.path(LED)
-                                .queryParam(LED_ID, LED_ID_VALUE)
-                                .queryParam(STATUS, OFF)
-                                .build());
-            }
-        });
-    }
+
 
     @Override
     protected void onDetach(DetachEvent detachEvent) {
@@ -126,8 +100,6 @@ public class Dht22Am2302View extends VerticalLayout implements ResponsiveHeaderD
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
         if (attachEvent.isInitialAttach()) {
-            //Service led pin 2
-            this.ledPinService(attachEvent.getUI());
             this.dht22Service.readDht22Sensor(attachEvent.getUI(),apexCharts,
                     apexChartService, h2Temperature, h2Humidity, sensorDht22GridServices);
         }
