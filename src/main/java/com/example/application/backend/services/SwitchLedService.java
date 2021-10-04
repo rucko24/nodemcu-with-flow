@@ -1,6 +1,7 @@
 package com.example.application.backend.services;
 
 import com.example.application.backend.model.SensorDht22;
+import com.example.application.util.NotificationsUtils;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,7 @@ import java.util.function.Function;
  */
 @Service
 @RequiredArgsConstructor
-public class LedPinService {
-
+public class SwitchLedService implements NotificationsUtils {
     private final WebClient webClient;
 
     /**
@@ -34,7 +34,7 @@ public class LedPinService {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(SensorDht22.class)
-                .doOnError(error -> ui.access(() -> Notification.show(error.getMessage())))
+                .doOnError(error -> ui.access(() -> this.showError(error.getMessage())))
                 .subscribe(sensorDht22 -> {
                     ui.access(() -> {
                         Notification.show(sensorDht22.getStatus());
