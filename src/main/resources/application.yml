@@ -1,8 +1,14 @@
-server.port=${PORT:8080}
+server:
+  port: ${PORT:8080}
 # Ensure application is run in Vaadin 14/npm mode
-vaadin.compatibilityMode = false
-logging.level.org.atmosphere = warn
+vaadin:
+  compatibilityMode: false
+logging:
+  level:
+    org.atmosphere: warn
 
 # To improve the performance during development. 
 # For more information https://vaadin.com/docs/v14/flow/spring/tutorial-spring-configuration.html#special-configuration-parameters
 # vaadin.whitelisted-packages= org/vaadin/example
+base_url: "http://192.168.1.190:8081/async-esp8285/api/v1/"
+

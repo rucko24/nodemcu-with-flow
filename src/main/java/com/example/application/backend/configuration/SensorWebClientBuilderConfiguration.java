@@ -2,6 +2,7 @@ package com.example.application.backend.configuration;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -11,13 +12,13 @@ import reactor.netty.http.client.HttpClient;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.example.application.backend.services.Dht22Service.BASE_URL;
-
 /**
  * WebClient builder with BASE_URL
  */
 @Configuration
 public class SensorWebClientBuilderConfiguration {
+    @Value("${base_url}")
+    public String baseUrl;
 
     @Bean
     public WebClient sensorWebClientBuilder(final WebClient.Builder webClient) {
@@ -29,7 +30,7 @@ public class SensorWebClientBuilderConfiguration {
         //Use this configured http connector to build the web client
         return webClient
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .baseUrl(BASE_URL)
+                .baseUrl(baseUrl)
                 .build();
     }
 }
