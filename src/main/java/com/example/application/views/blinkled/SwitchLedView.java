@@ -45,7 +45,7 @@ public class SwitchLedView extends VerticalLayout {
 
     private void ledPinService(final UI ui) {
         this.ledPinButton.addValueChangeListener(e -> {
-            if (e.getValue() == Boolean.TRUE) {
+            if (e.getValue()) {
                 this.ledPinService.highLowPin(ui,
                         (Function<UriBuilder, URI>) uriBuilder -> uriBuilder.path(LED)
                                 .queryParam(LED_ID, LED_ID_VALUE)
@@ -55,9 +55,9 @@ public class SwitchLedView extends VerticalLayout {
                 this.ledPinService.highLowPin(ui,
                         (Function<UriBuilder, URI>) uriBuilder ->
                                 uriBuilder.path(LED)
-                                .queryParam(LED_ID, LED_ID_VALUE)
-                                .queryParam(STATUS, OFF)
-                                .build());
+                                        .queryParam(LED_ID, LED_ID_VALUE)
+                                        .queryParam(STATUS, OFF)
+                                        .build());
             }
         });
     }

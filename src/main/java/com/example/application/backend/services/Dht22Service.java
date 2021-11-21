@@ -43,7 +43,7 @@ public class Dht22Service implements NotificationsUtils {
 
     /**
      * Make call using WebClient with config reactor netty HTTP client.
-     * By default read and connect timeout of 2s, to notify client side.
+     * By default, read and connect timeout of 2s, to notify client side.
      *
      * @param ui ui
      * @param apexCharts line char
