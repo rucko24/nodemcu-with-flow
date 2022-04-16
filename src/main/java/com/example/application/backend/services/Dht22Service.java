@@ -9,12 +9,15 @@ import com.github.appreciated.apexcharts.ApexCharts;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.H2;
+import io.github.resilience4j.bulkhead.Bulkhead;
+import io.github.resilience4j.reactor.bulkhead.operator.BulkheadOperator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -40,6 +43,8 @@ public class Dht22Service implements NotificationsUtils {
 
     private final TimestampService timestampService;
     private final WebClient webClient;
+    private final Bulkhead bulkhead;
+//    private final Retry retry;
 
     /**
      * Make call using WebClient with config reactor netty HTTP client.
@@ -65,9 +70,12 @@ public class Dht22Service implements NotificationsUtils {
                 .bodyToMono(SensorDht22Mapper.class)
                 .delaySubscription(Duration.ofSeconds(2))//1
                 .repeat()
+                .transform(BulkheadOperator.of(this.bulkhead))
+                .subscribeOn(Schedulers.immediate())
+                .publishOn(Schedulers.immediate())
                 .doOnError((Throwable throwable) -> {
                     log.warn("Error {}", throwable);
-                    ui.access(() -> this.showError(throwable.getMessage()));
+                    ui.access(() -> this.showError("ESP8266 not found!"));
                 })
                 .retryWhen(Retry.indefinitely());
 

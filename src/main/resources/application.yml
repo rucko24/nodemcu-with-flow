@@ -10,5 +10,5 @@ logging:
 # To improve the performance during development. 
 # For more information https://vaadin.com/docs/v14/flow/spring/tutorial-spring-configuration.html#special-configuration-parameters
 # vaadin.whitelisted-packages= org/vaadin/example
-base_url: "http://192.168.1.190:8081/async-esp8285/api/v1/"
+base_url: "http://192.168.1.216:8081/async-esp8285/api/v1/"
 
